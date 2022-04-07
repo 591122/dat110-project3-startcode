@@ -42,10 +42,32 @@ public class Util {
 		// it modifies 'upper' and 'id' when lower > upper e.g. set (6, 2) in mod 10 = {6, 7, 8, 9, 0, 1, 2}
 		
 		// implement: read the descriptions above
-		boolean cond = false;
+	boolean lowerId = (lower.compareTo(id) <= 0);
+	boolean upperId = (id.compareTo(upper) <= 0);
+	
+	boolean idUpper = (upper.compareTo(id) >= 0);
+	boolean idLower = (id.compareTo(lower) >= 0);
+		
+		//id større = 1
+		// mindre = -1
+	
+		if(lowerId && upperId) {
+			return true;
+		}
+		if(lower.compareTo(upper)>0) {
+			if(idUpper || idLower) {
+				return true;
+			}
+		}
+		return false;
+			
+			
+	
+		
+	
 
 		
-		return cond;
+		
 	}
 	
 	public static List<String> toString(List<NodeInterface> list) throws RemoteException {

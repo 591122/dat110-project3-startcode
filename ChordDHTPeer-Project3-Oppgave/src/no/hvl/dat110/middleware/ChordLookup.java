@@ -28,20 +28,29 @@ public class ChordLookup {
 	public NodeInterface findSuccessor(BigInteger key) throws RemoteException {
 		
 		// ask this node to find the successor of key
-		
 		// get the successor of the node
-		
+		NodeInterface successor = node.getSuccessor();
 		// get the stub for this successor (Util.getProcessStub())
-		
+		NodeInterface temp = Util.getProcessStub(successor.getNodeName(), successor.getPort());
 		// check that key is a member of the set {nodeid+1,...,succID} i.e. (nodeid+1 <= key <= succID) using the ComputeLogic
+		if(temp != null) {
+		if(Util.computeLogic(key, node.getNodeID().add(new BigInteger ("1")), successor.getNodeID())) {
+			return successor;
+			}
+		else {
+			NodeInterface highPred = findHighestPredecessor(key);
+			return highPred.findSuccessor(key);		
+			
+		}
 		
 		// if logic returns true, then return the successor
 		
 		// if logic returns false; call findHighestPredecessor(key)
-		
+	
 		// do return highest_pred.findSuccessor(key) - This is a recursive call until logic returns true
 				
-		return null;					
+		}
+		return null;
 	}
 	
 	/**
@@ -53,13 +62,21 @@ public class ChordLookup {
 	private NodeInterface findHighestPredecessor(BigInteger key) throws RemoteException {
 		
 		// collect the entries in the finger table for this node
-		
+		List<NodeInterface> fingertab = node.getFingerTable();
 		// starting from the last entry, iterate over the finger table
+		for(int i = fingertab.size()-1; i>=0; i--) {
 		
 		// for each finger, obtain a stub from the registry
-		
+			NodeInterface finger = fingertab.get(i);
+			NodeInterface fingerStub = Util.getProcessStub(finger.getNodeName(), finger.getPort());
 		// check that finger is a member of the set {nodeID+1,...,ID-1} i.e. (nodeID+1 <= finger <= key-1) using the ComputeLogic
-		
+			BigInteger node1 = node.getNodeID().add(new BigInteger("1"));
+			BigInteger node2 = key.subtract(new BigInteger("1"));
+			
+			if(Util.computeLogic(fingerStub.getNodeID(), node1, node2)) {
+				return (NodeInterface)fingerStub;
+			}
+		}
 		// if logic returns true, then return the finger (means finger is the closest to key)
 		
 		return (NodeInterface) node;			
